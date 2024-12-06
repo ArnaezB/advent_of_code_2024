@@ -1,0 +1,22 @@
+[package]
+name = "puzzle_011"
+version = "0.1.0"
+edition = "2021"
+
+[[bin]]
+name = "day01_01"
+path = "src/day_01/puzzle_01/main.rs"
+
+[[bin]]
+name = "day01_02"
+path = "src/day_01/puzzle_02/main.rs"
+
+[[bin]]
+name = "day02_01"
+path = "src/day_02/puzzle_01/main.rs"
+
+[[bin]]
+name = "day02_02"
+path = "src/day_02/puzzle_02/main.rs"
+
+[dependencies]
