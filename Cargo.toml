@@ -67,6 +67,14 @@ path = "src/day_08/puzzle_01/main.rs"
 name = "day08_02"
 path = "src/day_08/puzzle_02/main.rs"
 
+[[bin]]
+name = "day09_01"
+path = "src/day_09/puzzle_01/main.rs"
+
+[[bin]]
+name = "day09_02"
+path = "src/day_09/puzzle_02/main.rs"
+
 
 [dependencies]
 regex = "1.11.1"
