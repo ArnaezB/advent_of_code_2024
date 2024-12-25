@@ -88,8 +88,12 @@ name = "day11"
 path = "src/day_11/puzzle/main.rs"
 
 [[bin]]
-name = "day13_01"
-path = "src/day_13/puzzle_01/main.rs"
+name = "day12_01"
+path = "src/day_12/puzzle_01/main.rs"
+
+[[bin]]
+name = "day12_02"
+path = "src/day_12/puzzle_02/main.rs"
 
 [[bin]]
 name = "day13_02"
