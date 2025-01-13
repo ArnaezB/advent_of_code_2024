@@ -2,16 +2,38 @@ use itertools::Itertools;
 use std::time::Instant;
 
 fn main() {
-    let cpu_state = parse_file();
+    let mut a = 0u64;
+
+    let mut input = parse_file();
+    let mut queue = vec![];
 
     let start = Instant::now();
-    let output = cpu_state.debug();
+    queue.push(((input.tape.len() - 1) as i64, a));
 
-    println!("{} in {}ms", output, start.elapsed().as_millis())
+    while let Some((index, value)) = queue.pop() {
+        if index < 0 {
+            a = value;
+            break;
+        }
+
+        let target = input.tape[index as usize];
+
+        for k in (0..=0b111).rev() {
+            let a_candidate = (value << 3) + k;
+
+            input.reg_a = a_candidate;
+            let obtained = u8::try_from(input.debug().chars().nth(0).unwrap()).unwrap() - 48;
+            if target == obtained {
+                queue.push((index - 1, a_candidate))
+            }
+        }
+    }
+
+    println!("{} in {}ms", a, start.elapsed().as_millis())
 }
 
 fn parse_file() -> CpuState {
-    let mut input = include_str!("../input_test_02").lines();
+    let mut input = include_str!("../input").lines();
 
     let a = input.next().unwrap()[12..].parse::<u64>().unwrap();
     let b = input.next().unwrap()[12..].parse::<u64>().unwrap();
@@ -26,7 +48,7 @@ fn parse_file() -> CpuState {
     CpuState::new(a, b, c, tape)
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 struct CpuState {
     reg_a: u64,
     reg_b: u64,
@@ -49,7 +71,17 @@ impl CpuState {
             out: vec![],
         }
     }
-    fn debug(mut self) -> String {
+
+    fn reset(&mut self) {
+        self.ptr = 0;
+        self.out = vec![];
+        self.reg_b = 0;
+        self.reg_c = 0;
+    }
+
+    fn debug(&mut self) -> String {
+        self.reset();
+
         while usize::try_from(self.ptr).unwrap() < self.tape.len() {
             let op_code = self.tape[self.ptr as usize];
             let operand = self.tape[(self.ptr + 1) as usize] as u64;
@@ -86,7 +118,7 @@ impl CpuState {
         }
     }
 
-    fn output(self) -> String {
+    fn output(&self) -> String {
         self.out
             .iter()
             .map(|&u| char::try_from(u + 48).unwrap())
