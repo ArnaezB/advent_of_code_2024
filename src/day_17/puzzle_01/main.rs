@@ -11,7 +11,7 @@ fn main() {
 }
 
 fn parse_file() -> CpuState {
-    let mut input = include_str!("../input_test_02").lines();
+    let mut input = include_str!("../input").lines();
 
     let a = input.next().unwrap()[12..].parse::<u64>().unwrap();
     let b = input.next().unwrap()[12..].parse::<u64>().unwrap();
