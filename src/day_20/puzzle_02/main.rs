@@ -13,23 +13,24 @@ fn main() {
     println!("{} in {}ms", n_cheats, start.elapsed().as_millis());
 }
 
-fn find_cheats(start: [usize; 2], racetrack: &Vec<Vec<i32>>) -> usize {
-    let mut cheats = vec![];
+fn find_cheats(start: [usize; 2], racetrack: &Vec<Vec<i32>>) -> i32 {
+    let mut cheats = 0;
     let mut current = start;
-    cheats.extend(reachable_cell_and_valid(current, racetrack));
+    cheats += reachable_cell_and_valid(current, racetrack);
 
     while let Some(next) = next2(current, racetrack) {
-        cheats.extend(reachable_cell_and_valid(next, racetrack));
+        cheats += reachable_cell_and_valid(next, racetrack);
         current = next;
     }
-    cheats.len()
+    cheats
 }
 
-fn reachable_cell_and_valid(center: [usize; 2], racetrack: &Vec<Vec<i32>>) -> Vec<i32> {
-    let mut nodes = vec![];
+fn reachable_cell_and_valid(center: [usize; 2], racetrack: &Vec<Vec<i32>>) -> i32 {
+    let mut nodes = 0;
 
     let cost = racetrack[center[0]][center[1]];
     let center = [center[0] as i32, center[1] as i32];
+
     for it in 1..=CHEAT_SIZE {
         for j in 0..=it {
             let a = [center[0] - it + j, center[1] + j];
@@ -38,36 +39,37 @@ fn reachable_cell_and_valid(center: [usize; 2], racetrack: &Vec<Vec<i32>>) -> Ve
             if j > 0 && j < it {
                 let c = [center[0] + it - j, a[1]];
                 let d = [a[0], center[1] - j];
-                nodes.extend(
-                    [c, d]
-                        .iter()
-                        .filter_map(|x| valid_position(x, racetrack, cost + it).ok()),
-                );
+
+                if valid_position(&c, racetrack, cost + it) {
+                    nodes += 1
+                }
+
+                if valid_position(&d, racetrack, cost + it) {
+                    nodes += 1
+                }
             }
-            nodes.extend(
-                [a, b]
-                    .iter()
-                    .filter_map(|x| valid_position(x, racetrack, cost + it).ok()),
-            );
+
+            if valid_position(&a, racetrack, cost + it) {
+                nodes += 1
+            }
+
+            if valid_position(&b, racetrack, cost + it) {
+                nodes += 1
+            }
         }
     }
 
     nodes
 }
 
-fn valid_position(pos: &[i32; 2], racetrack: &Vec<Vec<i32>>, from_cost: i32) -> Result<i32, ()> {
+fn valid_position(pos: &[i32; 2], racetrack: &Vec<Vec<i32>>, from_cost: i32) -> bool {
     let size: i32 = racetrack.len().try_into().unwrap();
 
-    if pos[0] > 0
+    pos[0] > 0
         && pos[0] < size - 1
         && pos[1] > 0
         && pos[1] < size - 1
         && from_cost + MIN_SAVE <= racetrack[pos[0] as usize][pos[1] as usize]
-    {
-        Ok(racetrack[pos[0] as usize][pos[1] as usize] - from_cost)
-    } else {
-        Err(())
-    }
 }
 
 fn populate_distances(start: [usize; 2], racetrack: &mut Vec<Vec<i32>>) {
