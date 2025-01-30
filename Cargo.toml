@@ -151,6 +151,14 @@ path = "src/day_19/puzzle_01/main.rs"
 name = "day19_02"
 path = "src/day_19/puzzle_02/main.rs"
 
+[[bin]]
+name = "day20_01"
+path = "src/day_20/puzzle_01/main.rs"
+
+[[bin]]
+name = "day20_02"
+path = "src/day_20/puzzle_02/main.rs"
+
 [dependencies]
 regex = "1.11.1"
 itertools = "0.14.0"
